@@ -1,5 +1,5 @@
 import React from 'react';
-import { Check, Pause, Play, RotateCcw } from 'lucide-react';
+import { Check, Laptop, Pause, Play, RotateCcw, Smartphone } from 'lucide-react';
 import { FLOW_STEPS } from '../../data/flowData';
 import type { StepId } from '../../types';
 
@@ -9,6 +9,8 @@ interface FlowNavigationProps {
   isAutoTouring: boolean;
   onToggleAutoTour: () => void;
   onRestart: () => void;
+  deviceMode?: 'auto' | 'macbook' | 'phone';
+  onChangeDeviceMode?: (mode: 'auto' | 'macbook' | 'phone') => void;
 }
 
 export const FlowNavigation: React.FC<FlowNavigationProps> = ({
@@ -17,6 +19,8 @@ export const FlowNavigation: React.FC<FlowNavigationProps> = ({
   isAutoTouring,
   onToggleAutoTour,
   onRestart,
+  deviceMode = 'auto',
+  onChangeDeviceMode,
 }) => {
   const currentIdx = FLOW_STEPS.findIndex((s) => s.id === currentStep);
 
@@ -71,8 +75,10 @@ export const FlowNavigation: React.FC<FlowNavigationProps> = ({
         })}
       </div>
 
-      {/* Auxiliary Controls: Auto-Tour Play/Pause + Restart */}
-      <div className="flex items-center gap-2 text-xs font-mono text-neutral-400">
+      {/* Auxiliary Controls: Auto-Tour Play/Pause + Device Morph Switcher + Restart */}
+      <div className="flex flex-wrap items-center justify-center gap-2.5 text-xs font-mono text-neutral-400">
+        
+        {/* Auto Tour Toggle */}
         <button
           onClick={onToggleAutoTour}
           className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border transition-all ${
@@ -91,13 +97,59 @@ export const FlowNavigation: React.FC<FlowNavigationProps> = ({
           ) : (
             <>
               <Play className="w-3.5 h-3.5 text-neutral-400" />
-              <span>Reproducir Tour Guiado</span>
+              <span>Reproducir Tour</span>
             </>
           )}
         </button>
 
-        <span className="text-neutral-700">•</span>
+        <span className="text-neutral-700 hidden sm:inline">•</span>
 
+        {/* Device Morphing Switcher (MacBook ⟷ Smartphone ⟷ Auto) */}
+        {onChangeDeviceMode && (
+          <div className="flex items-center p-0.5 rounded-full bg-neutral-900/80 border border-neutral-800 text-[11px]">
+            <button
+              onClick={() => onChangeDeviceMode('macbook')}
+              className={`px-2.5 py-1 rounded-full transition-all flex items-center gap-1 ${
+                deviceMode === 'macbook' 
+                  ? 'bg-neutral-800 text-white font-medium shadow-xs' 
+                  : 'text-neutral-400 hover:text-white'
+              }`}
+              title="Ver en formato MacBook Pro"
+            >
+              <Laptop className="w-3 h-3" />
+              <span>MacBook</span>
+            </button>
+
+            <button
+              onClick={() => onChangeDeviceMode('phone')}
+              className={`px-2.5 py-1 rounded-full transition-all flex items-center gap-1 ${
+                deviceMode === 'phone' 
+                  ? 'bg-indigo-600 text-white font-medium shadow-xs shadow-indigo-600/30' 
+                  : 'text-neutral-400 hover:text-white'
+              }`}
+              title="Ver transformación adaptativa en Smartphone"
+            >
+              <Smartphone className="w-3 h-3" />
+              <span>Smartphone</span>
+            </button>
+
+            <button
+              onClick={() => onChangeDeviceMode('auto')}
+              className={`px-2 py-1 rounded-full transition-all text-[10px] ${
+                deviceMode === 'auto' 
+                  ? 'bg-neutral-800 text-emerald-400 font-semibold' 
+                  : 'text-neutral-500 hover:text-neutral-300'
+              }`}
+              title="Modo automático responsivo según el viewport"
+            >
+              <span>Auto</span>
+            </button>
+          </div>
+        )}
+
+        <span className="text-neutral-700 hidden sm:inline">•</span>
+
+        {/* Restart Button */}
         <button
           onClick={onRestart}
           className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-full hover:text-neutral-200 transition-colors"

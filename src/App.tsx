@@ -19,6 +19,7 @@ export function App() {
   const [isAutoTouring, setIsAutoTouring] = useState<boolean>(false);
   const [isDemoModalOpen, setIsDemoModalOpen] = useState<boolean>(false);
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
+  const [deviceMode, setDeviceMode] = useState<'auto' | 'macbook' | 'phone'>('auto');
 
   const demoSectionRef = useRef<HTMLDivElement>(null);
 
@@ -96,16 +97,19 @@ export function App() {
               isAutoTouring={isAutoTouring}
               onToggleAutoTour={() => setIsAutoTouring(!isAutoTouring)}
               onRestart={handleRestart}
+              deviceMode={deviceMode}
+              onChangeDeviceMode={setDeviceMode}
             />
           </div>
 
-          {/* 3. Hero MacBook Mockup with Functional Web App inside */}
-          <div className={`w-full transition-all duration-500 ease-out ${
+          {/* 3. Hero Device Mockup with Functional Web App inside (Adaptive MacBook ⟷ Smartphone) */}
+          <div className={`w-full transition-all duration-700 ease-out flex justify-center ${
             isExpanded ? 'max-w-[1400px] scale-[1.02]' : 'max-w-[1240px]'
           }`}>
             <MacBookMockup 
               activeStepNumber={currentStepObj.stepNumber}
               isAutoTouring={isAutoTouring}
+              deviceMode={deviceMode}
             >
               <ProductScreen 
                 currentStep={currentStep}
@@ -115,6 +119,7 @@ export function App() {
                 onRestart={handleRestart}
                 onToggleExpandMockup={() => setIsExpanded(!isExpanded)}
                 isExpanded={isExpanded}
+                deviceMode={deviceMode}
               />
             </MacBookMockup>
           </div>
